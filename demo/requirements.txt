@@ -1,0 +1,5 @@
+torch
+transformers>=4.47
+peft>=0.20
+gradio>=4.0
+accelerate

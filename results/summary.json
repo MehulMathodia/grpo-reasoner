@@ -1,0 +1,7 @@
+{
+  "model": "Qwen/Qwen2.5-0.5B-Instruct",
+  "n": 500,
+  "base_accuracy": 0.436,
+  "grpo_accuracy": 0.448,
+  "delta": 0.01200000000000001
+}

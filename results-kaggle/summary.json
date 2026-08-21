@@ -1,0 +1,12 @@
+{
+  "model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "gpu": "Tesla P100-PCIE-16GB",
+  "n_eval": "full-test-1319",
+  "base_greedy": 0.6914329037149356,
+  "n": 1319,
+  "grpo_greedy": 0.7156937073540561,
+  "delta_greedy": 0.02426080363912053,
+  "regressions": 97,
+  "fixes": 129,
+  "mcnemar_p": 0.038963142990740315
+}

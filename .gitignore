@@ -1,0 +1,20 @@
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.venv/
+venv/
+
+# local training/eval artifacts (large or scratch) — the shipped adapter is adapter-1.5b/
+grpo-out/
+grpo-smoketest/
+grpo-adapter/
+grpo-adapter-400step/
+wandb/
+*.pid
+*.log
+# ...but keep the logs that are evidence for reported numbers
+!results/train_0p5b_local.log
+!results-kaggle/train_kernel.log
