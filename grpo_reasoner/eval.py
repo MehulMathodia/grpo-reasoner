@@ -28,6 +28,56 @@ class EvalResult:
     results_path: str | None
 
 
+def evaluate_items(
+    model_id: str,
+    items: list[dict],
+    adapter_path: str | None = None,
+    max_new_tokens: int = 512,
+    batch_size: int = 16,
+    save_path: str | None = None,
+    matcher=None,
+) -> EvalResult:
+    """Generic greedy evaluation over `items` = [{'question': str, 'gold': str, ...}].
+    `matcher(pred, gold) -> bool` defaults to GSM8K's exact normalized string
+    match; transfer benchmarks pass a numeric-tolerant matcher instead. Same
+    extractor, same decoding, same output format as `evaluate`."""
+    from grpo_reasoner.data import build_prompt
+
+    if matcher is None:
+        matcher = lambda pred, gold: pred is not None and pred == _normalize_number(gold)  # noqa: E731
+
+    model, tokenizer = load_model(model_id, adapter_path=adapter_path)
+    prompts = [build_prompt(it["question"]) for it in items]
+    completions = generate_batch(
+        model, tokenizer, prompts,
+        max_new_tokens=max_new_tokens, temperature=0.0, batch_size=batch_size,
+    )
+
+    records, n_correct, n_parseable = [], 0, 0
+    for it, comp in zip(items, completions):
+        pred = extract_answer(comp)
+        correct = bool(matcher(pred, it["gold"]))
+        n_correct += int(correct)
+        n_parseable += int(pred is not None)
+        rec = {**{k: v for k, v in it.items() if k != "prompt"},
+               "pred": pred, "correct": correct, "completion": comp}
+        records.append(rec)
+
+    results_path = None
+    if save_path:
+        Path(save_path).parent.mkdir(parents=True, exist_ok=True)
+        with open(save_path, "w", encoding="utf-8") as f:
+            for r in records:
+                f.write(json.dumps(r) + "\n")
+        results_path = save_path
+
+    return EvalResult(
+        model_id=model_id, adapter_path=adapter_path, n=len(records),
+        accuracy=n_correct / len(records) if records else 0.0,
+        n_parseable=n_parseable, results_path=results_path,
+    )
+
+
 def evaluate(
     model_id: str,
     adapter_path: str | None = None,
