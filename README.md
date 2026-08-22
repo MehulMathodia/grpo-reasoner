@@ -21,6 +21,26 @@ correctness during training climbed from 0.25 to 0.82:
 
 ![reward curve](results-kaggle/reward_curve_kaggle.png)
 
+## v0.2 — does the gain transfer? (yes, and most where arithmetic is hardest)
+
+The same adapter — trained only on GSM8K's train split — evaluated on two
+benchmarks it never saw, base vs trained, greedy, paired McNemar:
+
+| Benchmark | n | Base | After GRPO | Δ | fixed / regressed | p |
+|---|---|---|---|---|---|---|
+| **GSM-Hard** — GSM8K questions with large/awkward numbers | 1,300 | 46.0% | **50.2%** | **+4.2** | 144 / 89 | **0.0004** |
+| **SVAMP** — different source, built to defeat pattern-matching | 1,000 | 81.2% | **83.7%** | +2.5 | 90 / 65 | 0.054 |
+| GSM8K (v0.1, for reference) | 1,319 | 69.1% | 71.6% | +2.4 | 129 / 97 | 0.039 |
+
+![transfer](results-transfer/transfer_all_benchmarks.png)
+
+Reading it honestly: GSM-Hard is unambiguous — the adapter makes the model
+markedly more robust when the arithmetic gets hard, which is the most plausible
+thing for a correctness reward to teach. SVAMP is positive and consistent in
+direction but *borderline* (p = 0.054) and is reported as such, not as
+significant. Pooled over all 3,619 paired questions: 363 fixed vs 251 regressed
+(p ≈ 7e-6). Per-question files for every benchmark are in `results-transfer/`.
+
 ## What this is
 
 GRPO (Group Relative Policy Optimization) samples a *group* of completions per

@@ -1,0 +1,27 @@
+{
+  "model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "gpu": "Tesla P100-PCIE-16GB",
+  "benchmarks": {
+    "svamp": {
+      "n": 1000,
+      "base": 0.812,
+      "grpo": 0.837,
+      "delta": 0.02499999999999991,
+      "regressions": 65,
+      "fixes": 90,
+      "mcnemar_p": 0.05353757584043604,
+      "seconds": 6539.825165748596
+    },
+    "gsm_hard": {
+      "n": 1300,
+      "base": 0.46,
+      "grpo": 0.5023076923076923,
+      "delta": 0.042307692307692324,
+      "regressions": 89,
+      "fixes": 144,
+      "mcnemar_p": 0.00038156569650025444,
+      "seconds": 12706.383992910385
+    }
+  },
+  "elapsed_hours": 5.398116870323817
+}

@@ -4,6 +4,28 @@ A plain record of what was done, in order, so the history of this project stays
 honest. Each entry states what was actually run and what was actually measured —
 no rounding up.
 
+## v0.2.0 — 2026-08-23 — transfer evaluation on unseen benchmarks
+
+**What was added**
+- `grpo_reasoner/transfer.py`: SVAMP (all 1,000) and GSM-Hard loaders, numeric-
+  tolerant grading (floats, negatives, thousands separators) — 6 new tests, 23 total.
+- `eval.evaluate_items`: generic paired greedy eval with a pluggable matcher.
+- `notebooks/kaggle_transfer_kernel.py`: the kernel that produced the numbers
+  (Kaggle P100, 5.4 h).
+
+**What was run and what it showed** — same v0.1 adapter, no retraining:
+- GSM-Hard (n=1,300): 46.0% → 50.2% (+4.2), 144 fixed / 89 regressed, p = 0.0004.
+- SVAMP (n=1,000): 81.2% → 83.7% (+2.5), 90 fixed / 65 regressed, **p = 0.054 —
+  borderline, not claimed as significant.**
+- Pooled with GSM8K over 3,619 paired questions: 363 fixed / 251 regressed, p ≈ 7e-6.
+- GSM-Hard used 1,300 of 1,319 questions (the kernel sized it to its time budget).
+
+**What this does and doesn't show**
+- The gain is not GSM8K-style overfitting: it moves two held-out benchmarks in the
+  same direction, most strongly the arithmetic-heavy one.
+- It does not show general reasoning improvement beyond grade-school-style math;
+  nothing harder (e.g. MATH) was evaluated. Single seed still.
+
 ## v0.1.0 — 2026-08-19 — first public release
 
 **What exists**
