@@ -1,0 +1,8 @@
+{
+  "n_prompts": 600,
+  "k": 4,
+  "sampled": 2400,
+  "correct_samples": 1936,
+  "kept": 1094,
+  "prompts_with_any_correct": 567
+}

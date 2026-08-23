@@ -118,8 +118,15 @@ def train_sft(name, lr, epochs, limit=None, data_jsonl=None):
 # ---------------- RFT data from the BASE model (same 600 prompts as the gold arm)
 t0 = time.time()
 rft_path = f"{WORK}/rft600_data.jsonl"
-build_rft_dataset(MODEL, n_prompts=600, k=4, temperature=0.7, max_per_prompt=2,
-                  max_new_tokens=512, batch_size=32, seed=0, out_path=rft_path)
+prebuilt = glob.glob("/kaggle/input/**/reference/rft600_data.jsonl", recursive=True)
+if prebuilt:
+    shutil.copy(prebuilt[0], rft_path)
+    shutil.copy(prebuilt[0].replace(".jsonl", "_stats.json"),
+                rft_path.replace(".jsonl", "_stats.json"))
+    print("using prebuilt RFT data from the previous run (generation already verified)", flush=True)
+else:
+    build_rft_dataset(MODEL, n_prompts=600, k=4, temperature=0.7, max_per_prompt=2,
+                      max_new_tokens=512, batch_size=32, seed=0, out_path=rft_path)
 summary["rft_gen_seconds"] = time.time() - t0
 summary["rft_stats"] = json.load(open(rft_path.replace(".jsonl", "_stats.json")))
 

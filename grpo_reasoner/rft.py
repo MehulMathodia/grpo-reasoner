@@ -39,6 +39,12 @@ def build_rft_dataset(
     expanded = [p for p in prompts for _ in range(k)]
     completions = generate_batch(model, tokenizer, expanded, max_new_tokens=max_new_tokens,
                                  temperature=temperature, batch_size=batch_size)
+    # free the GPU before any downstream training starts (a training subprocess
+    # launched while this process still holds the model OOMs immediately)
+    import torch
+    del model
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
 
     rng = random.Random(seed)
     records, n_correct_total = [], 0
