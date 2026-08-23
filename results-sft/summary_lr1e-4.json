@@ -1,0 +1,55 @@
+{
+  "model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "gpu": "Tesla P100-PCIE-16GB",
+  "arms": {
+    "sft600": {
+      "n": 1319,
+      "accuracy": 0.49507202426080366,
+      "vs_base": {
+        "n_common": 1319,
+        "regressions": 344,
+        "fixes": 85,
+        "mcnemar_p": 5.158315484410855e-38
+      },
+      "vs_grpo": {
+        "n_common": 1319,
+        "regressions": 369,
+        "fixes": 78,
+        "mcnemar_p": 2.5724317333000687e-46
+      },
+      "eval_seconds": 2290.098737478256
+    },
+    "sftfull": {
+      "n": 1300,
+      "accuracy": 0.52,
+      "vs_base": {
+        "n_common": 1300,
+        "regressions": 330,
+        "fixes": 106,
+        "mcnemar_p": 7.778356852438584e-28
+      },
+      "vs_grpo": {
+        "n_common": 1300,
+        "regressions": 342,
+        "fixes": 84,
+        "mcnemar_p": 5.268568162070944e-38
+      },
+      "eval_seconds": 2314.4137489795685
+    }
+  },
+  "reference": {
+    "base_acc": 0.6914329037149356,
+    "grpo_acc": 0.7156937073540561,
+    "grpo_vs_base": {
+      "n_common": 1319,
+      "regressions": 97,
+      "fixes": 129,
+      "mcnemar_p": 0.038963142990740315
+    }
+  },
+  "train_seconds": {
+    "sft600": 1087.2185230255127,
+    "sftfull": 4416.606750488281
+  },
+  "elapsed_hours": 2.8520788606007894
+}

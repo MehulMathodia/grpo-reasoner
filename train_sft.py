@@ -26,6 +26,8 @@ def main():
     p.add_argument("--model", default="Qwen/Qwen2.5-1.5B-Instruct")
     p.add_argument("--output-dir", default="sft-adapter")
     p.add_argument("--limit", type=int, default=None, help="Number of training examples (None = all).")
+    p.add_argument("--data-jsonl", default=None,
+                   help="Train on a prebuilt prompt/completion JSONL (e.g. RFT data) instead of GSM8K gold.")
     p.add_argument("--epochs", type=float, default=3.0)
     p.add_argument("--max-steps", type=int, default=-1, help="Override epochs if > 0.")
     p.add_argument("--lr", type=float, default=1e-4)
@@ -38,7 +40,11 @@ def main():
     args = p.parse_args()
 
     bf16_ok = torch.cuda.is_available() and torch.cuda.is_bf16_supported()
-    train_ds = load_gsm8k_sft(limit=args.limit)
+    if args.data_jsonl:
+        from datasets import load_dataset
+        train_ds = load_dataset("json", data_files=args.data_jsonl, split="train")
+    else:
+        train_ds = load_gsm8k_sft(limit=args.limit)
     print(f"SFT examples: {len(train_ds)}", flush=True)
 
     tokenizer = AutoTokenizer.from_pretrained(args.model)
