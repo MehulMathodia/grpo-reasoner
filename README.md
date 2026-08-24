@@ -41,6 +41,41 @@ direction but *borderline* (p = 0.054) and is reported as such, not as
 significant. Pooled over all 3,619 paired questions: 363 fixed vs 251 regressed
 (p ≈ 7e-6). Per-question files for every benchmark are in `results-transfer/`.
 
+## v0.3 — GRPO vs supervised fine-tuning: only RL improved the model
+
+The obvious question: why RL instead of just fine-tuning on the gold solutions?
+Answered empirically. Six supervised arms — same base, same LoRA config, same
+`\boxed{}` output contract, completion-only loss, full-test paired evaluation:
+
+| Arm | GSM8K test | vs base | Median completion |
+|---|---|---|---|
+| **GRPO (600 prompts, answers only — no rationales)** | **71.6%** | **+2.4, p = 0.039** | 962 chars |
+| Base Qwen2.5-1.5B-Instruct | 69.1% | — | 956 |
+| RFT, lr 1e-4 (SFT on the model's own verified-correct solutions) | 65.4% | −3.7, p = 0.003 | 969 |
+| RFT, lr 2e-5 | 65.0% | −4.1, p = 0.0009 | 962 |
+| SFT on gold rationales — 7,473 ex / 600 ex × lr 1e-4 / 2e-5 | 49.5–52.0% | ≈ −18 | ~230 — **collapsed** |
+
+![ablation](results-sft/ablation_all_arms.png)
+
+Two mechanisms, both measured rather than guessed:
+
+1. **Gold-rationale SFT collapses the reasoning style.** GSM8K's human-written
+   solutions are terse; imitating them cut median completion length from ~956 to
+   ~230 characters and accuracy by ~18 points. A gentle learning rate does not
+   prevent it — the collapse appears at 2e-5 as well.
+2. **Even on-policy imitation hurt.** RFT (rejection-sampling fine-tuning on the
+   model's *own* correct, style-preserving solutions — the strongest fair SFT
+   baseline) still lost ~4 points at both learning rates. On a model already
+   heavily post-trained by its makers, every imitation objective we tried
+   disturbed it; GRPO's advantage-weighted updates were the only intervention
+   that helped.
+
+Honest scope: two learning rates × two data regimes is not an exhaustive SFT
+sweep. The claim is "every reasonable configuration tried degraded the model
+while GRPO improved it at matched data," not "SFT can never work." Per-question
+files for every arm are in `results-sft/`, and the RFT training data (1,094
+verified-correct solutions) is included for reproduction.
+
 ## What this is
 
 GRPO (Group Relative Policy Optimization) samples a *group* of completions per

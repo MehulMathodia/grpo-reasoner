@@ -4,6 +4,31 @@ A plain record of what was done, in order, so the history of this project stays
 honest. Each entry states what was actually run and what was actually measured —
 no rounding up.
 
+## v0.3.0 — 2026-08-24 — GRPO vs SFT ablation (six arms; only RL improved the model)
+
+**What was added**: `sft_data.py` (gold rationales → the same \boxed{} contract),
+`train_sft.py` (same LoRA, completion-only loss, `--data-jsonl`), `rft.py`
+(rejection-sampling FT data with the same verifier), both ablation kernels,
+27 unit tests total.
+
+**What was run** (all: same base/LoRA/contract, full-test greedy, paired McNemar):
+- Gold-rationale SFT, 600 and 7,473 examples, lr 1e-4 and 2e-5 → 49.5–52.0%
+  (base 69.1%). Median completion collapsed ~956 → ~230 chars at BOTH learning
+  rates: the terse human rationales teach step-skipping.
+- RFT (SFT on 1,094 of the model's own verified-correct solutions; base solved
+  80.7% of sampled attempts), lr 1e-4 and 2e-5 → 65.4% / 65.0% (−4 pts,
+  p ≤ 0.003) with style preserved (~965 chars) — even on-policy imitation hurt.
+- Reference: GRPO 71.6% (+2.4, p = 0.039) remains the only arm above base.
+
+**Limitations stated up front**: 2 LRs × 2 data regimes each, 3 epochs, no
+early stopping or LR sweep beyond this; single seed throughout. The finding is
+"every reasonable SFT configuration tried degraded this heavily-post-trained
+instruct model while GRPO improved it," not a universal claim about SFT.
+
+**Operational notes**: first fairness kernel OOM'd (in-process RFT generation
+held the model on the GPU; fixed in `rft.py`); RFT data survived and was reused.
+Total ablation compute: ~11.3 h Kaggle P100 across two kernels.
+
 ## v0.2.0 — 2026-08-23 — transfer evaluation on unseen benchmarks
 
 **What was added**

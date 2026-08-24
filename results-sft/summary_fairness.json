@@ -1,0 +1,94 @@
+{
+  "model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "gpu": "Tesla P100-PCIE-16GB",
+  "arms": {
+    "rft600_lr1e-4": {
+      "n": 1319,
+      "accuracy": 0.6542835481425322,
+      "median_completion_chars": 969,
+      "vs_base": {
+        "n_common": 1319,
+        "regressions": 155,
+        "fixes": 106,
+        "mcnemar_p": 0.002895295479658105
+      },
+      "vs_grpo": {
+        "n_common": 1319,
+        "regressions": 185,
+        "fixes": 104,
+        "mcnemar_p": 2.186211340658206e-06
+      },
+      "eval_seconds": 6413.313264846802
+    },
+    "sft600_lr2e-5": {
+      "n": 1300,
+      "accuracy": 0.5138461538461538,
+      "median_completion_chars": 223,
+      "vs_base": {
+        "n_common": 1300,
+        "regressions": 334,
+        "fixes": 102,
+        "mcnemar_p": 7.41773966482654e-30
+      },
+      "vs_grpo": {
+        "n_common": 1300,
+        "regressions": 352,
+        "fixes": 86,
+        "mcnemar_p": 2.930735407650439e-39
+      },
+      "eval_seconds": 2601.493515729904
+    },
+    "sftfull_lr2e-5": {
+      "n": 1300,
+      "accuracy": 0.5076923076923077,
+      "median_completion_chars": 230,
+      "vs_base": {
+        "n_common": 1300,
+        "regressions": 334,
+        "fixes": 94,
+        "mcnemar_p": 1.326535445311197e-32
+      },
+      "vs_grpo": {
+        "n_common": 1300,
+        "regressions": 359,
+        "fixes": 85,
+        "mcnemar_p": 3.985759540719647e-41
+      },
+      "eval_seconds": 2396.8962314128876
+    },
+    "rft600_lr2e-5": {
+      "n": 1300,
+      "accuracy": 0.65,
+      "median_completion_chars": 962,
+      "vs_base": {
+        "n_common": 1300,
+        "regressions": 161,
+        "fixes": 106,
+        "mcnemar_p": 0.0009159968717999793
+      },
+      "vs_grpo": {
+        "n_common": 1300,
+        "regressions": 194,
+        "fixes": 105,
+        "mcnemar_p": 2.9652031912786804e-07
+      },
+      "eval_seconds": 6334.236851453781
+    }
+  },
+  "train_seconds": {
+    "rft600_lr1e-4": 3450.2494580745697,
+    "sft600_lr2e-5": 1065.7750401496887,
+    "sftfull_lr2e-5": 4412.55512881279,
+    "rft600_lr2e-5": 3431.5400955677032
+  },
+  "rft_gen_seconds": 0.008247137069702148,
+  "rft_stats": {
+    "n_prompts": 600,
+    "k": 4,
+    "sampled": 2400,
+    "correct_samples": 1936,
+    "kept": 1094,
+    "prompts_with_any_correct": 567
+  },
+  "elapsed_hours": 8.409344294137425
+}
